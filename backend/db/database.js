@@ -15,7 +15,7 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     phone TEXT,
-    role TEXT DEFAULT 'citizen' CHECK(role IN ('citizen', 'admin', 'staff')),
+   role TEXT DEFAULT 'citizen' CHECK(role IN ('citizen', 'admin', 'staff', 'ceo')),
     department TEXT,
     is_active INTEGER DEFAULT 1,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -95,6 +95,13 @@ if (!adminExists) {
   db.prepare(`
     INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)
   `).run('System Administrator', 'ken.kimathi@landcommission.go.ke', hashedPassword, 'admin');
+}
+const ceoExists = db.prepare("SELECT id FROM users WHERE email = 'ceo@landcommission.go.ke'").get();
+if (!ceoExists) {
+  const hashedPassword = bcrypt.hashSync('CEO@2026', 10);
+  db.prepare(`
+    INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)
+  `).run('Chief Executive Officer', 'ceo@landcommission.go.ke', hashedPassword, 'ceo');
 }
 
 module.exports = db;

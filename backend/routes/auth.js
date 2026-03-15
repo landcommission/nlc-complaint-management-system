@@ -22,9 +22,9 @@ router.post('/register', (req, res) => {
 
   try {
     const hashed = bcrypt.hashSync(password, 10);
-    const result = db.prepare(
-      'INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)'
-    ).run(name, email.toLowerCase(), hashed, phone || null);
+  const result = db.prepare(
+  'INSERT INTO users (name, email, password, phone, role) VALUES (?, ?, ?, ?, ?)'
+).run(name, email.toLowerCase(), hashed, phone || null, 'citizen');
 
     const token = jwt.sign({ userId: result.lastInsertRowid }, JWT_SECRET, { expiresIn: '7d' });
     const user = db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(result.lastInsertRowid);

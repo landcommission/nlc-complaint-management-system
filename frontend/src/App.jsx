@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import CEODashboard from "./pages/CEODashboard";
+import CEOLogin from "./pages/CEOLogin";
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,11 +15,24 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminComplaints from './pages/AdminComplaints';
 import AdminComplaintDetail from './pages/AdminComplaintDetail';
 
-function ProtectedRoute({ children, adminOnly = false }) {
+
+function ProtectedRoute({ children, adminOnly = false, ceoOnly = false }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="loading-screen"><div className="spinner" /></div>;
+
+  if (loading) {
+    return <div className="loading-screen"><div className="spinner" /></div>;
+  }
+
   if (!user) return <Navigate to="/login" replace />;
-  if (adminOnly && !['admin', 'staff'].includes(user.role)) return <Navigate to="/" replace />;
+
+  if (adminOnly && !['admin', 'staff'].includes(user.role)) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (ceoOnly && user.role !== 'ceo') {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
@@ -27,8 +42,7 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
+          <Routes><Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/track" element={<TrackComplaint />} />
@@ -38,10 +52,19 @@ function App() {
           <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/complaints" element={<ProtectedRoute adminOnly><AdminComplaints /></ProtectedRoute>} />
           <Route path="/admin/complaints/:id" element={<ProtectedRoute adminOnly><AdminComplaintDetail /></ProtectedRoute>} />
+         <Route
+  path="/ceo-dashboard"
+  element={
+    <ProtectedRoute ceoOnly>
+      <CEODashboard />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
   );
+  <Route path="/ceo-login" element={<CEOLogin />} />
 }
 
 export default App;

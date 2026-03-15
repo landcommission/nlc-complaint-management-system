@@ -14,29 +14,22 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section style={{ background: '#8b6616', padding: '3rem 1.5rem', textAlign: 'center', color: 'white' }}>
+      <section className="hero">
         <div className="hero-content">
           <div className="hero-badge">
-            <span></span> NATIONAL LAND COMMISSION COMPLAINT PORTAL.
+            <span></span> NLC CMS Complaint Portal
           </div>
-          <h1 className="hero-title" style={{ fontFamily: "'Open Sans', sans-serif", fontWeight: '5000' }}>Submit, track, and resolve complaints efficiently.</h1>
-          <p></p>
+          <h1>Your Voice Matters. We're Listening.</h1>
+          <p>Submit complaints, track progress, and get real resolutions. Transparent, accountable, and efficient.</p>
           <div className="hero-actions">
-            <br></br>
-  {user && (
-    <Link to="/submit" className="btn btn-hero-primary btn-lg">
-      Submit a Complaint
-    </Link>
-  )}
-
-  <Link to="/anonymous" className="btn btn-hero-outline btn-lg">
-    Submit Anonymously
-  </Link>
-
-  <Link to="/track" className="btn btn-hero-outline btn-lg">
-    Track Complaint
-  </Link>
-</div>
+            {user ? (
+              <Link to="/submit" className="btn btn-hero-primary btn-lg">Submit a Complaint</Link>
+            ) : (
+              <Link to="/register" className="btn btn-hero-primary btn-lg">Get Started — It's Free</Link>
+            )}
+            <Link to="/anonymous" className="btn btn-hero-outline btn-lg">Submit Anonymously</Link>
+            <Link to="/track" className="btn btn-hero-outline btn-lg">Track Complaint</Link>
+          </div>
         </div>
       </section>
 
@@ -58,9 +51,9 @@ export default function Home() {
       </section>
 
       {/* CTA Strip */}
-      <section style={{ background: '#8b6616', padding: '3rem 1.5rem', textAlign: 'center', color: 'white' }}>
+      <section style={{ background: 'var(--accent)', padding: '3rem 1.5rem', textAlign: 'center', color: 'white' }}>
         <h2 style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>Ready to Submit a Complaint?</h2>
-        <p style={{ marginBottom: '1.5rem', opacity: 0.85 }}></p>
+        <p style={{ marginBottom: '1.5rem', opacity: 0.85 }}>Join thousands of citizens who have successfully resolved issues through our platform.</p>
         <div className="hero-actions">
           {user ? (
             <Link to="/submit" className="btn btn-hero-primary btn-lg">Submit Now</Link>

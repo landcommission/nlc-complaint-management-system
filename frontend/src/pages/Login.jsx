@@ -9,7 +9,16 @@ export default function Login() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
 
-  if (user) { navigate('/'); return null; }
+  if (user) {
+  if (user.role === 'admin' || user.role === 'staff') {
+    navigate('/admin');
+  } else if (user.role === 'ceo') {
+    navigate('/ceo-dashboard');
+  } else {
+    navigate('/my-complaints');
+  }
+  return null;
+}
 
   const handle = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -19,7 +28,13 @@ export default function Login() {
     try {
       const data = await login(form.email, form.password);
       toast.success(`Welcome back, ${data.user.name.split(' ')[0]}!`);
-      navigate(['admin', 'staff'].includes(data.user.role) ? '/admin' : '/my-complaints');
+      if (data.user.role === 'admin' || data.user.role === 'staff') {
+  navigate('/admin');
+} else if (data.user.role === 'ceo') {
+  navigate('/ceo-dashboard');
+} else {
+  navigate('/my-complaints');
+}
     } catch (err) {
       toast.error(err.response?.data?.error || 'Login failed');
     } finally {

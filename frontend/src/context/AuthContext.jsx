@@ -3,9 +3,7 @@ import axios from 'axios';
 
 const AuthContext = createContext(null);
 
-const API = axios.create({
-  baseURL: 'http://localhost:5000/api'
-});
+const API = axios.create({ baseURL: '/api' });
 
 API.interceptors.request.use(config => {
   const token = localStorage.getItem('cms_token');
@@ -20,43 +18,25 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('cms_token');
     const savedUser = localStorage.getItem('cms_user');
-
-    if (token && savedUser && savedUser !== "undefined") {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Invalid user data in localStorage:", error);
-        localStorage.removeItem('cms_user');
-        localStorage.removeItem('cms_token');
-        setUser(null);
-      }
+    if (token && savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     const res = await API.post('/auth/login', { email, password });
-
-    if (res.data?.token && res.data?.user) {
-      localStorage.setItem('cms_token', res.data.token);
-      localStorage.setItem('cms_user', JSON.stringify(res.data.user));
-      setUser(res.data.user);
-    }
-
+    localStorage.setItem('cms_token', res.data.token);
+    localStorage.setItem('cms_user', JSON.stringify(res.data.user));
+    setUser(res.data.user);
     return res.data;
   };
 
   const register = async (name, email, password, phone) => {
     const res = await API.post('/auth/register', { name, email, password, phone });
-
-    if (res.data?.token && res.data?.user) {
-      localStorage.setItem('cms_token', res.data.token);
-      localStorage.setItem('cms_user', JSON.stringify(res.data.user));
-      setUser(res.data.user);
-    }
-
+    localStorage.setItem('cms_token', res.data.token);
+    localStorage.setItem('cms_user', JSON.stringify(res.data.user));
+    setUser(res.data.user);
     return res.data;
   };
 
